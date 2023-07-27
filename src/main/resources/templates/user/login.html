@@ -27,47 +27,47 @@
 
 <body class="gray-bg signin">
 
-    <div class="middle-box text-center loginscreen  animated fadeInDown">
+<div class="middle-box text-center loginscreen  animated fadeInDown">
+    <div>
         <div>
-            <div>
 
-                <h1 class="logo-name" style="font-size: 36px;letter-spacing: 1px;">图书管理系统</h1>
+            <h1 class="logo-name" style="font-size: 36px;letter-spacing: 1px;">图书管理系统</h1>
 
-            </div>
-            <h3>欢迎使用 X+图书管理平台</h3>
+        </div>
+        <h3>欢迎使用 X+图书管理平台</h3>
 
-            <form class="m-t form-horizontal" role="form" th:action="@{/user/login}" method="POST">
-                <div class="form-group">
-                    <input type="text" class="form-control" placeholder="用户名" name="name" required="true" style="color:black">
-                    <span th:if="${USER_NOT_EXIST}" class="text-danger">
+        <form class="m-t form-horizontal" role="form" th:action="@{/user/login}" method="POST">
+            <div class="form-group">
+                <input type="text" class="form-control" placeholder="用户名" name="name" required="true" style="color:black">
+                <span th:if="${USER_NOT_EXIST}" class="text-danger">
                         用户不存在
                     </span>
 
-                </div>
-                <div class="form-group">
-                    <input type="password" class="form-control" placeholder="密码" name="pwd" required="true" style="color:black">
+            </div>
+            <div class="form-group">
+                <input type="password" class="form-control" placeholder="密码" name="pwd" required="true" style="color:black">
 
-                    <span th:if="${PWD_ERROR}" class="text-danger">
+                <span th:if="${PWD_ERROR}" class="text-danger">
                         密码不正确
                     </span>
 
-                </div>
+            </div>
 
-                <div class="form-group">
-                    <input type="text" class="form-control" placeholder="验证码" name="checkcode" required="true" style="width:200px;color:black">
-                </div>
+            <div class="form-group">
+                <input type="text" class="form-control" placeholder="验证码" name="checkcode" required="true" style="width:200px;color:black">
+            </div>
 
-                <button type="submit" class="btn btn-primary block full-width m-b">登 录</button>
-                <p class="text-muted text-center"> <a href="login.html#"><small>忘记密码了？</small></a> | <a href="register.html" th:href="@{/user/toRegister}">注册一个新账号</a>
-                </p>
+            <button type="submit" class="btn btn-primary block full-width m-b">登 录</button>
+            <p class="text-muted text-center"> <a href="login.html#"><small>忘记密码了？</small></a> | <a href="register.html" th:href="@{/user/toRegister}">注册一个新账号</a>
+            </p>
 
-            </form>
-        </div>
+        </form>
     </div>
+</div>
 
-    <!-- 全局js -->
-    <script src="../../static/js/jquery.min.js?v=2.1.4" th:src="@{/static/js/jquery.min.js(v='2.1.4')}"></script>
-    <script src="../../static/js/bootstrap.min.js?v=3.3.6" th:src="@{/static/js/bootstrap.min.js(v='3.3.6')}"></script>
+<!-- 全局js -->
+<script src="../../static/js/jquery.min.js?v=2.1.4" th:src="@{/static/js/jquery.min.js(v='2.1.4')}"></script>
+<script src="../../static/js/bootstrap.min.js?v=3.3.6" th:src="@{/static/js/bootstrap.min.js(v='3.3.6')}"></script>
 
 </body>
 
