@@ -15,7 +15,7 @@ import java.util.List;
 
 /******************
  * @Author yejf
- * @Description TODO
+ * @Description WebMvcConfig
  */
 @Configuration
 public class WebMvcConfig implements WebMvcConfigurer {
