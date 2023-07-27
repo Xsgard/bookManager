@@ -55,16 +55,12 @@ public class WebMvcConfig implements WebMvcConfigurer {
         return messageSource;
     }
 
-    /**
-     * 设置静态资源映射
-     *
-     * @param registry
-     */
-    @Override
-    public void addResourceHandlers(ResourceHandlerRegistry registry) {
-        registry.addResourceHandler("/images/**").addResourceLocations("classpath:/images/");
-        registry.addResourceHandler("/front/**").addResourceLocations("classpath:/front/");
-    }
+
+//    @Override
+//    public void addResourceHandlers(ResourceHandlerRegistry registry) {
+//        registry.addResourceHandler("/static/**").addResourceLocations("classpath:/static/");
+//        registry.addResourceHandler("/templates/**").addResourceLocations("classpath:/templates/");
+//    }
 
     /**
      * 扩展Mvc框架的消息转换器
