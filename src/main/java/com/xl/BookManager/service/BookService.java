@@ -8,7 +8,7 @@ import java.util.List;
 
 /******************
  * @author yejf
- * @description TODO
+ * @description BookService
  */
 public interface BookService extends IService<Book> {
 }
