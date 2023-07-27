@@ -7,7 +7,7 @@ import java.io.Serializable;
 import java.util.List;
 
 /******************
- * @author yejf
+ * @author asgard
  * @description BookService
  */
 public interface BookService extends IService<Book> {
