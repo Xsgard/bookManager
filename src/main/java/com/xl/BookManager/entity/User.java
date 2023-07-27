@@ -1,7 +1,10 @@
 package com.xl.BookManager.entity;
 
+import com.baomidou.mybatisplus.annotation.EnumValue;
+import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.Objects;
 
@@ -10,8 +13,8 @@ import java.util.Objects;
  * @Description User实体
  */
 @Data
-public class User {
-
+@TableName("t_user")
+public class User implements Serializable {
     private Integer id;
 
     private String userName;  //登录用户名,唯一且非空
@@ -20,7 +23,7 @@ public class User {
 
     private String mobilePhone; //手机号，唯一且非空
 
-    private UserStatus status; //用户状态
+    private Integer status; //用户状态
 
     private String realName; //真实姓名
 

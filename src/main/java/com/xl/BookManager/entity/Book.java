@@ -1,5 +1,6 @@
 package com.xl.BookManager.entity;
 
+import com.baomidou.mybatisplus.annotation.TableName;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -19,6 +20,7 @@ import java.util.Objects;
  * @description Book实体
  */
 @Data
+@TableName("t_book")
 public class Book implements Serializable {
     private Integer id;
 
@@ -46,6 +48,8 @@ public class Book implements Serializable {
 
     //@NotBlank(message = "{coverurl.error.notnull}")
     private String coverUrl;
+
+    private Boolean isDeleted;
 
     @Override
     public boolean equals(Object o) {
