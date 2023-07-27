@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <link rel="shortcut icon" href="../../static/ico/favicon.ico" th:href="@{/static/ico/favicon.ico}">
+
+    <title>图书列表</title>
+    <!--导入bootstrap的主样式-->
+    <link rel="stylesheet" href="../../static/css/bootstrap.min.css" th:href="@{/static/css/bootstrap.min.css}"
+          type="text/css">
+    <style type="text/css">
+        .xs-img-thumbnail {
+            width: 50px;
+            height: 50px;
+        }
+    </style>
+</head>
+<body>
+<nav class="navbar navbar-default">
+    <!--<div class="container-fluid">-->
+    <div class="container">
+        <!-- 做当视窗的大小小于 768px 时，把导航栏收缩起来的样式 -->
+        <div class="navbar-header">
+            <!-- 整个导航栏收缩后形成的一个按钮 -->
+            <button class="navbar-toggle collapsed" type="button" data-toggle="collapse" data-target="#my_nav">
+                <span class="sr-only">针对特殊设备</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <!--<span class="glyphicon glyphicon-search"></span>-->
+            </button>
+            <!-- 如果想显示品牌的图片，这里可以把文件替换成 img src="图片位置" -->
+            <a href="#" class="navbar-brand">品牌LOGO</a>
+        </div>
+
+        <!-- navbar中的内容 -->
+        <ul class="nav navbar-nav navbar-right">
+            <li class="navbar-text" th:inline="text">Welcome, [[${session.LOGIN_USER.realName}]]</li>
+            <li><a href="../user/login.html" th:href="@{/user/logout}">退出</a></li>
+        </ul>
+
+    </div>
+</nav>
+<div class="container">
+    <div class="row">
+        <div class="col-md-2">
+            <button class="btn btn-primary" data-toggle="modal" data-target="#add_book_modal">添加</button>
+            <button class="btn btn-success" id="deleteAll">删除所有</button>
+        </div>
+        <div class="col-md-10 text-right">
+            <form class="form-inline" th:action="@{/book/search.do}" action="#" method="get">
+                <div class="form-group">
+                    <div class="input-group">
+                        <!-- 自定义搜索框的宽度：请自行在 form-control样式后添加 width -->
+                        <input type="search" class="form-control" name="search" placeholder="请输入要查询的图书关键字"
+                               style="width: 300px;" th:value="${search}">
+                        <span class="input-group-btn">
+                        <button type="submit" class="btn btn-primary" id="searchBtn"><span
+                                class="glyphicon glyphicon-search"></span></button>
+                    </span>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+    <!-- 添加一条水平分割线 -->
+    <hr/>
+    <div class="row">
+        <div class="col-md-12">
+            <table class="table table-bordered table-striped table-hover">
+                <tr>
+                    <th>
+                        <!-- 复选框 -->
+                        <input type="checkbox" name="select-all" id="select-all" value="all">
+                    </th>
+                    <th>序号</th>
+                    <th>图书名称</th>
+                    <th>作者</th>
+                    <th>单价</th>
+                    <th>出版社</th>
+                    <th>出版日期</th>
+                    <th>封面</th>
+                    <th>操作</th>
+                </tr>
+
+                <tr th:each="book,vs: ${BOOK_LIST}">
+                    <td> <!-- 复选框 -->
+                        <input type="checkbox" name="flags" th:value="${book.id}">
+                    </td>
+                    <td th:text="${vs.count}">1</td>
+                    <td th:text="${book.name}">图书名</td>
+                    <td th:text="${book.author}">作者</td>
+                    <td th:text="${'￥' + #numbers.formatDecimal(book.price, 1, 2)}">￥88.8</td>
+                    <td th:text="${book.publisher}">出版社</td>
+                    <td th:text="${book.publishDate}">2020-11-12</td>
+                    <td><img src="../../static/images/book_cover_img/dnxhdc.jpg"
+                             th:src="@{/static/images/book_cover_img/{coverUrl}(coverUrl=${book.coverUrl})}"
+                             class="xs-img-thumbnail"/></td>
+                    <td>
+                        <a href="#" class="btn btn-primary" data-toggle="modal" data-target="#upd_book_modal"
+                           th:book_id="${book.id}">更新</a>
+                        <a href="javascript:void(0);" class="btn btn-danger" th:book_id="${book.id}">删除</a>
+                    </td>
+                </tr>
+
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- 添加 模态框代码 -->
+<div class="modal fade" id="add_book_modal" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <!-- 模态框头部定义 -->
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span>
+                </button>
+                <h4 class="modal-title">添加图书</h4>
+            </div>
+            <!--体部定义-->
+            <div class="modal-body">
+                <!-- 表单定义 -->
+                <form th:action="@{/book/add.do}" name="addBookForm" method="post" class="form-horizontal"
+                      enctype="multipart/form-data">
+                    <div class="form-group has-success has-feedback">
+                        <!-- <label class="col-md-1 control-label sr-only">图书名:</label>-->
+                        <div class="col-md-6">
+                            <input type="text" name="name" class="form-control" placeholder="图书名">
+                            <!--<span class="glyphicon glyphicon-ok form-control-feedback"></span>-->
+                        </div>
+                        <div class="col-md-6">
+                            <label class="control-label" tip="name"></label>
+                        </div>
+                    </div>
+                    <div class="form-group has-success has-feedback">
+                        <!--<label class="col-md-1 control-label sr-only">作者:</label>-->
+                        <div class="col-md-5">
+                            <input type="text" name="author" class="form-control" placeholder="作者">
+                            <!--<span class="glyphicon glyphicon-remove form-control-feedback"></span>-->
+                        </div>
+                        <div class="col-md-offset-1 col-md-6">
+                            <label class="control-label" tip="author"></label>
+                        </div>
+                    </div>
+
+                    <div class="form-group has-success has-feedback">
+                        <!--<label class="col-md-1 control-label sr-only">作者:</label>-->
+                        <div class="col-md-4">
+                            <input type="number" name="price" class="form-control" placeholder="图书单价" min="0.1"
+                                   step="0.2">
+                            <!--<span class="glyphicon glyphicon-remove form-control-feedback"></span>-->
+                        </div>
+                        <div class="col-md-offset-2 col-md-6">
+                            <label class="control-label" tip="price"></label>
+                        </div>
+                    </div>
+
+                    <div class="form-group has-success has-feedback">
+                        <!--<label class="col-md-1 control-label sr-only">作者:</label>-->
+                        <div class="col-md-6">
+                            <input type="text" name="publisher" class="form-control" placeholder="出版社">
+                            <!--<span class="glyphicon glyphicon-remove form-control-feedback"></span>-->
+                        </div>
+                        <div class="col-md-6">
+                            <label class="control-label" tip="publisher"></label>
+                        </div>
+                    </div>
+
+                    <div class="form-group has-success has-feedback">
+                        <!--<label class="col-md-1 control-label sr-only">作者:</label>-->
+                        <div class="col-md-5">
+                            <input type="date" name="publishDate" class="form-control" placeholder="出版日期">
+                            <!--<span class="glyphicon glyphicon-remove form-control-feedback"></span>-->
+                        </div>
+                        <div class="col-md-6">
+                            <label class="control-label" tip="publishDate"></label>
+                        </div>
+                    </div>
+
+                    <div class="form-group has-success has-feedback">
+                        <!--<label class="col-md-1 control-label sr-only">作者:</label>-->
+                        <div class="col-md-6">
+                            <input type="file" name="coverUrlFile">
+                            <p class="help-block">请选择合适的图书封面</p>
+                            <!--<span class="glyphicon glyphicon-remove form-control-feedback"></span>-->
+                        </div>
+                        <div class="col-md-6">
+                            <label class="control-label" tip="coverUrl">xxx</label>
+                        </div>
+                    </div>
+
+                </form>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                <button type="button" class="btn btn-primary" id="addModal_Btn">添加</button>
+            </div>
+
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+<!-- 更新图书信息的模态框 -->
+<div class="modal fade" id="upd_book_modal" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <!-- 模态框头部定义 -->
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span>
+                </button>
+                <h4 class="modal-title">更新图书</h4>
+            </div>
+            <!--体部定义-->
+            <div class="modal-body">
+                <!-- 表单定义 -->
+                <form th:action="@{/book/update.do}" name="updBookForm" method="post" class="form-horizontal">
+                    <!-- 添加ID隐藏域 -->
+                    <input type="hidden" name="id" value=""/>
+
+                    <div class="form-group has-success has-feedback">
+                        <!-- <label class="col-md-1 control-label sr-only">图书名:</label>-->
+                        <div class="col-md-6">
+                            <input type="text" name="name" class="form-control" placeholder="图书名" value="当你学会独处时">
+                            <!--<span class="glyphicon glyphicon-ok form-control-feedback"></span>-->
+                        </div>
+                        <div class="col-md-6">
+                            <label class="control-label" update-tip="name"></label>
+                        </div>
+                    </div>
+                    <div class="form-group has-success has-feedback">
+                        <!--<label class="col-md-1 control-label sr-only">作者:</label>-->
+                        <div class="col-md-5">
+                            <input type="text" name="author" class="form-control" placeholder="作者" value="周国平">
+                            <!--<span class="glyphicon glyphicon-remove form-control-feedback"></span>-->
+                        </div>
+                        <div class="col-md-offset-1 col-md-6">
+                            <label class="control-label" update-tip="author"></label>
+                        </div>
+                    </div>
+
+                    <div class="form-group has-success has-feedback">
+                        <!--<label class="col-md-1 control-label sr-only">作者:</label>-->
+                        <div class="col-md-4">
+                            <input type="number" name="price" class="form-control" placeholder="图书单价" min="0.1"
+                                   step="0.2" value="34.5">
+                            <!--<span class="glyphicon glyphicon-remove form-control-feedback"></span>-->
+                        </div>
+                        <div class="col-md-offset-2 col-md-6">
+                            <label class="control-label" update-tip="price"></label>
+                        </div>
+                    </div>
+
+                    <div class="form-group has-success has-feedback">
+                        <!--<label class="col-md-1 control-label sr-only">作者:</label>-->
+                        <div class="col-md-6">
+                            <input type="text" name="publisher" class="form-control" placeholder="出版社" value="人文出版社">
+                            <!--<span class="glyphicon glyphicon-remove form-control-feedback"></span>-->
+                        </div>
+                        <div class="col-md-6">
+                            <label class="control-label" update-tip="publisher"></label>
+                        </div>
+                    </div>
+
+                    <div class="form-group has-success has-feedback">
+                        <!--<label class="col-md-1 control-label sr-only">作者:</label>-->
+                        <div class="col-md-5">
+                            <input type="date" name="publishDate" class="form-control" placeholder="出版日期"
+                                   value="2020-01-23">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="control-label" update-tip="publishDate"></label>
+                        </div>
+                    </div>
+
+                    <div class="form-group has-success has-feedback">
+                        <!--<label class="col-md-1 control-label sr-only">作者:</label>-->
+                        <div class="col-md-6">
+                            <img class="img-thumbnail"
+                                 name="coverUrl">
+                            <!-- 通过隐藏域把原来的文件名传回去 -->
+                            <input type="hidden" name="coverUrl" value=""/>
+                            <input type="file" name="coverUrlFile" style="margin-top: 10px;">
+                            <p class="help-block">请重新选择图书封面</p>
+                        </div>
+                    </div>
+
+                </form>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                <button type="button" class="btn btn-primary" id="updModal_btn">更新</button>
+            </div>
+
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+<!-- 导入js文件 -->
+<script type="text/javascript" src="../../static/js/jquery.min.js" th:src="@{/static/js/jquery.min.js}"></script>
+<script type="text/javascript" src="../../static/js/bootstrap.min.js" th:src="@{/static/js/bootstrap.min.js}"></script>
+
+<script th:inline="javascript">
+    //jquery的入口
+    $(function () {
+        //0. 获取应用名
+        var appName = [[${#request.getContextPath()}]];
+        console.log("appName: " + appName);
+
+        //1. 获取复选框的控制按钮，并添加事件
+        $("#select-all").change(function () {
+            //选出所有的复选框【不含 #select-all】
+            $(":checkbox").not("#select-all").prop("checked", $("#select-all").prop("checked"));
+        });
+
+        //2. 给删除所选  按钮添加 单击事件
+        $("#deleteAll").click(function () {
+            //定义一个变量来保存是否有 选中的复选框
+            var isSelect = false;
+            //定义 一个变量来存储用户选中的复选框 的值
+            var queryData = "";   //格式是： key=value1&key=value2&key=value3
+            var datas = [];
+            //针对所有的复选框进行迭代
+            $(":checkbox").not("#select-all").each(function (index, item) {
+                isSelect = isSelect || $(item).prop("checked");
+                // 只要是被选中的，就取出它的值
+                if ($(item).prop("checked")) {
+                    queryData = (queryData + "flags=" + $(item).val() + "&");
+                    //
+                    datas.push($(item).val());
+                }
+            });
+            //把queryData中的最后一个 & 给删除掉
+            queryData = queryData.substring(0, queryData.length - 1);
+            //
+            console.log(queryData);
+            //把数组转换成 json 字符串
+            var datasJson = JSON.stringify(datas);
+            console.log(datasJson);
+
+            //判断
+            if (!isSelect) {
+                //说明没有选中任何一个
+                alert("至少要选中一个");
+            } else {
+                //说明有选中，继续提示真的要删除吗
+                if (confirm("确定要删除选中的图书吗？")) {
+                    //执行删除操作 ... 使用 ajax 来发送异步删除的请求
+                    $.ajax({
+                        //url: "${pageContext.request.contextPath}/book/deleteSelect.do?"+queryData,
+                        url: appName + "/book/deleteSelect.do",
+                        method: "post",
+                        data: datasJson,
+                        async: true,
+                        dataType: "text",   //表示期望服务端返回给我们的数据格式
+                        contentType: "application/json",  //客户端给服务端的格式
+                        success: function (data) {
+                            //成功
+                            alert(data);
+                            //重新加载本页面
+                            window.location.reload();
+                        },
+                        error: function (jqXHR) {
+                            // 失败
+                            alert("删除失败了");
+                        }
+                    });
+                }
+            }
+        }); //
+
+        //3. 给弹出框的添加按钮 来指定事件
+        $("#addModal_Btn").click(function () {
+            //我们要去提交 addBookForm 表单
+            var form = document.forms["addBookForm"];
+            var formData = new FormData(form);
+            //AJAX 去提交表单数据
+            $.ajax({
+                url: appName + "/book/add.do",
+                method: "POST",
+                async: true,
+                data: formData,  //综合表单，使用formData 来封装，不能用 seriralize ，否则提交不了
+                dataType: "json",   //期望服务端发送给客户端的数据类型。注：不要写成：application/json
+                contentType: false, //必需使用 false,  这样才能使用form表单采用 multipart/form-data 传输
+                processData: false,
+                success: function (data) {
+                    console.log(data);
+                    if (data.status == 'success') {
+                        alert("添加图书成功");
+                        //刷新界面
+                        window.location.reload();
+                    } else {
+                        //Bean 验证不通过, 把验证不通过的信息放到页面中
+                        for (var i = 0; i < data.data.length; i++) {
+                            var errorMsg = data.data[i];
+                            var fieldName = errorMsg.field;
+                            var targetElement = "label[tip=" + fieldName + "]";
+                            console.log(targetElement);
+                            $(targetElement).append(errorMsg.defaultMessage);
+                        }
+                    }
+                },
+                error: function (jqXHR) {
+                    alert("添加失败");
+                }
+            });
+        });
+
+        //删除单一图书
+        $(".btn.btn-danger").click(function () {
+            //判断
+            if (confirm("确定要删除此记录吗？")) {
+                console.log($(this).attr("book_id"));
+                $.ajax({
+                    //发送AJAX请求
+                    url: appName + "/book/delete.do?id=" + $(this).attr("book_id"),
+                    method: "GET",
+                    async: true,
+                    dataType: "text",
+                    success: function (data) {
+                        alert(data);
+                        window.location.reload();
+                    },
+                    error: function (jqXHR) {
+                        alert("删除失败");
+                    }
+                });
+            }
+        });
+
+
+        //更新操作界面
+        $("table .btn.btn-primary").click(function () {
+            //异步去获取指定id的对象
+            $.ajax({
+                //发送AJAX请求
+                url: appName + "/book/toUpdate.do?id=" + $(this).attr("book_id"),
+                method: "GET",
+                async: true,
+                dataType: "json",  //拿到json
+                success: function (bookJson) {
+                    //把返回的json对象添加到弹出层的更新表单域中
+                    $("input[name='id']").val(bookJson.id);
+                    $("input[name='name']").val(bookJson.name);
+                    $("input[name='price']").val(bookJson.price);
+                    $("input[name='author']").val(bookJson.author);
+                    $("input[name='publishDate']").val(bookJson.publishDate);
+                    $("input[name='publisher']").val(bookJson.publisher);
+                    //图片
+                    $("img[name='coverUrl']").attr("src", appName + "/static/images/book_cover_img/" + bookJson.coverUrl);
+                    $("input[name='coverUrl']").val(bookJson.coverUrl);
+                },
+                error: function (jqXHR) {
+                    alert("获取数据失败");
+                    //重新加载页面
+                    window.location.reload();
+                }
+            });
+        });
+
+        // 更新弹出层中的更新操作
+        $("#updModal_btn").click(function () {
+            //我们要去提交 addBookForm 表单
+            var form = document.forms["updBookForm"];
+            var formData = new FormData(form);
+            $.ajax({  //AJAX 去提交表单数据
+                url: appName + "/book/update.do",
+                method: "POST",
+                async: true,
+                data: formData,  //综合表单，使用formData 来封装，不能用 seriralize ，否则提交不了
+                dataType: "json",   //期望服务端发送给客户端的数据类型。注：不要写成：application/json
+                contentType: false, //必需使用 false,  这样才能使用form表单采用 multipart/form-data 传输
+                processData: false,
+                success: function (data) {
+                    console.log(data);
+                    if (data.status == 'success') {
+                        alert("更新图书成功");
+                        console.log(data.data);
+                        //刷新界面
+                        window.location.reload();
+                    } else {   //Bean 验证不通过, 把验证不通过的信息放到页面中
+                        for (var i = 0; i < data.data.length; i++) {
+                            var errorMsg = data.data[i];
+                            var fieldName = errorMsg.field;
+                            var targetElement = "label[update-tip=" + fieldName + "]";
+                            console.log(targetElement);
+                            $(targetElement).append(errorMsg.defaultMessage);
+                        }
+                    }
+                },
+                error: function (jqXHR) {
+                    alert("更新失败, 请重新再试!");
+                }
+            }); //end of ajax
+        }); //end of update modal btn
+
+    }); //end of jquery
+</script>
+
+</body>
+</html>
