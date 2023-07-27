@@ -1,6 +1,6 @@
 package com.xl.BookManager.mapper;
 
-import com.mybatisflex.core.BaseMapper;
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.xl.BookManager.entity.User;
 import org.apache.ibatis.annotations.Mapper;
 
