@@ -1,6 +1,6 @@
 package com.xl.BookManager.service;
 
-import com.mybatisflex.core.service.IService;
+import com.baomidou.mybatisplus.extension.service.IService;
 import com.xl.BookManager.entity.Book;
 
 import java.io.Serializable;

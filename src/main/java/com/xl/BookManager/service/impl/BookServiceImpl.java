@@ -1,9 +1,11 @@
 package com.xl.BookManager.service.impl;
 
-import com.mybatisflex.spring.service.impl.ServiceImpl;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.xl.BookManager.entity.Book;
 import com.xl.BookManager.mapper.BookMapper;
+import com.xl.BookManager.mapper.UserMapper;
 import com.xl.BookManager.service.BookService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 /**
@@ -14,4 +16,10 @@ import org.springframework.stereotype.Service;
  */
 @Service
 public class BookServiceImpl extends ServiceImpl<BookMapper, Book> implements BookService {
+    private BookMapper BookMapper;
+
+    @Autowired
+    private void setApplicationContext(BookMapper BookMapper) {
+        this.BookMapper = BookMapper;
+    }
 }
