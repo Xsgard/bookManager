@@ -5,7 +5,7 @@ spring:
     name: bookManager
   datasource:
     druid:
-      driver-class-name: com.mysql.jc.jdbc.Driver
+      driver-class-name: com.mysql.cj.jdbc.Driver
       url: jdbc:mysql://localhost:3308/demo?useSSL=false
       username: root
       password: 123456
