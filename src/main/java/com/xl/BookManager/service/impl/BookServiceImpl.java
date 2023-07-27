@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service;
 /**
  * @author Asgard
  * @version 1.0
- * @description: TODO
+ * @description: BookService的实现类，继承了mybatis-flex的ServiceImpl，实现了自定义的BookService
  * @date 2023/7/27 14:08
  */
 @Service
