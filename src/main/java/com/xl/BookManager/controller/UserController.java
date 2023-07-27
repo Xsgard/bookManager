@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 /**
  * @author Asgard
  * @version 1.0
- * @description: TODO
+ * @description: 处理‘/user’的请求
  * @date 2023/7/27 14:26
  */
 @RestController
