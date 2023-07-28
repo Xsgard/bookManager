@@ -50,6 +50,9 @@ public class Book implements Serializable {
     //@NotBlank(message = "{coverurl.error.notnull}")
     private String coverUrl;
 
+    @TableLogic
+    private Integer isDelete;
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
