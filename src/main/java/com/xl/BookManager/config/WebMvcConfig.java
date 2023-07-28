@@ -71,4 +71,11 @@ public class WebMvcConfig implements WebMvcConfigurer {
         //
         return messageSource;
     }
+
+    @Override
+    public void extendMessageConverters(List<HttpMessageConverter<?>> converters) {
+        MappingJackson2HttpMessageConverter messageConverter = new MappingJackson2HttpMessageConverter();
+        messageConverter.setObjectMapper(new JacksonObjectMapper());
+        converters.add(0, messageConverter);
+    }
 }
