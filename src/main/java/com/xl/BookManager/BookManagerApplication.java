@@ -9,8 +9,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 public class BookManagerApplication {
 
     public static void main(String[] args) {
-        log.info("项目启动成功！");
         SpringApplication.run(BookManagerApplication.class, args);
+        log.info("项目启动成功！");
     }
 
 }
