@@ -1,5 +1,6 @@
 package com.xl.BookManager.entity;
 
+import com.baomidou.mybatisplus.annotation.TableLogic;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
@@ -48,8 +49,6 @@ public class Book implements Serializable {
 
     //@NotBlank(message = "{coverurl.error.notnull}")
     private String coverUrl;
-
-    private Boolean isDeleted;
 
     @Override
     public boolean equals(Object o) {
