@@ -1,24 +1,25 @@
 package com.xl.BookManager.controller;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.baomidou.mybatisplus.extension.conditions.query.LambdaQueryChainWrapper;
-import com.xl.BookManager.common.R;
 import com.xl.BookManager.entity.User;
 import com.xl.BookManager.service.UserService;
 import com.xl.BookManager.utils.CheckCodeUtil;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.apache.commons.lang.StringUtils;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
+import java.time.LocalDateTime;
 
 /**
  * @author Asgard
@@ -57,7 +58,7 @@ public class UserController {
     public String login(@RequestParam("name") String name, @RequestParam("pwd") String password,
                         @RequestParam("checkcode") String checkcode, Model model, HttpSession session) throws IOException {
         LambdaQueryWrapper<User> queryWrapper = new LambdaQueryWrapper<>();
-        queryWrapper.eq(StringUtils.isEmpty(name), User::getUserName, name);
+        queryWrapper.eq(StringUtils.isNotEmpty(name), User::getUserName, name);
         User user = userService.getOne(queryWrapper);
         if (user == null) {
             model.addAttribute("USER_NOT_EXIST", "用户不存在");
@@ -73,16 +74,51 @@ public class UserController {
             return "user/login";
         }
         session.setAttribute("LOGIN_USER", user);
+        user.setLastLoginDate(LocalDateTime.now());
+        userService.updateById(user);
         log.info("用户{}登录成功", user.getUserName());
         return "redirect:/book/list";
     }
 
-    public void register(@RequestBody User user) {
-
+    @RequestMapping("/toRegister")
+    public String toRegister() {
+        return "user/register";
     }
 
+    @RequestMapping("/register")
+    public String register(User user, String pwd2, Model model) {
+        if (!user.getPassword().equals(pwd2)) {
+            model.addAttribute("CHECK_PWD_ERROR", "两次密码输入不一样");
+            return "user/register";
+        }
+        if (user.getRealName() == null) {
+            user.setRealName(user.getUserName());
+        }
+        user.setCreateDate(LocalDateTime.now());
+        user.setUpdateDate(LocalDateTime.now());
+        userService.save(user);
+        return "user/login";
+    }
+//
+//    @RequestMapping("/usernameCK")
+//    @ResponseBody
+//    public String usernameCheck(@RequestParam String username, Model model) {
+//        User user = new User();
+//        user.setRealName(username);
+//        LambdaQueryWrapper<User> queryWrapper = new LambdaQueryWrapper<>();
+//        queryWrapper.eq(StringUtils.isEmpty(user.getUserName()), User::getUserName, user.getUserName());
+//        int count = userService.count(queryWrapper);
+//        if (count > 0) {
+//            model.addAttribute("CHECK_PWD_ERROR", "两次密码输入不一样");
+//            return "user/login";
+//        }else
+//            return null;
+//    }
+
+    @RequestMapping("/logout")
     public String logout(HttpSession session) {
-        session.removeAttribute("LOGIN_USER");
+        log.info("用户已退出登录");
+        session.invalidate();
         return "redirect:/user/toLogin";
     }
 
