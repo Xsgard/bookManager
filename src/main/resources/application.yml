@@ -1,6 +1,17 @@
 server:
   port: 8080
+  servlet:
+    context-path: /app
+debug: false
 spring:
+  thymeleaf:
+    check-template-location: true
+    servlet:
+      content-type: text/html
+    enabled: true
+    encoding: utf-8
+    prefix: classpath:/templates/
+    suffix: .html
   application:
     name: bookManager
   datasource:
@@ -18,4 +29,5 @@ mybatis-plus:
       id-type: assign_id
 logging:
   config=classpath: log4j2.xml
-
+multipart:
+  enabled: true
