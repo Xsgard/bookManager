@@ -1,5 +1,6 @@
 package com.xl.BookManager.config;
 
+import org.springframework.boot.system.ApplicationHome;
 import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -20,6 +21,15 @@ import java.util.List;
 @Configuration
 public class WebMvcConfig implements WebMvcConfigurer {
 
+    private final String UPLOAD_IMAGE_URL;
+
+    public WebMvcConfig() {
+        System.out.println("--- 初始化 WebMvcConfig ....");
+        ApplicationHome applicationHome = new ApplicationHome(getClass());
+        UPLOAD_IMAGE_URL = "file:" + applicationHome.getDir().getAbsolutePath() + "/upload/images/";
+        System.out.println("----> 上传的图片映射路径：" + UPLOAD_IMAGE_URL);
+    }
+
     //@Bean
     /*public FilterRegistrationBean filterRegistrationBean() {
         System.out.println("执行了 FilterRegistrationBean...");
@@ -29,6 +39,13 @@ public class WebMvcConfig implements WebMvcConfigurer {
         filterRegistrationBean.setOrder(1);
         return filterRegistrationBean;
     }*/
+
+
+    @Override
+    public void addResourceHandlers(ResourceHandlerRegistry registry) {
+        //添加一个文件上传的静态路径映射, 如果是文件目录，则需要以 file: 开头
+        registry.addResourceHandler("/images/**").addResourceLocations(UPLOAD_IMAGE_URL);
+    }
 
     @Override
     public Validator getValidator() {
@@ -53,24 +70,5 @@ public class WebMvcConfig implements WebMvcConfigurer {
         messageSource.setAlwaysUseMessageFormat(true);
         //
         return messageSource;
-    }
-
-
-//    @Override
-//    public void addResourceHandlers(ResourceHandlerRegistry registry) {
-//        registry.addResourceHandler("/static/**").addResourceLocations("classpath:/static/");
-//        registry.addResourceHandler("/templates/**").addResourceLocations("classpath:/templates/");
-//    }
-
-    /**
-     * 扩展Mvc框架的消息转换器
-     *
-     * @param converters
-     */
-    @Override
-    public void extendMessageConverters(List<HttpMessageConverter<?>> converters) {
-        MappingJackson2HttpMessageConverter messageConverter = new MappingJackson2HttpMessageConverter();
-        messageConverter.setObjectMapper(new JacksonObjectMapper());
-        converters.add(0, messageConverter);
     }
 }
