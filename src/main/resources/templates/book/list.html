@@ -46,11 +46,12 @@
 </nav>
 <div class="container">
     <div class="row">
-        <div class="col-md-2">
+        <div class="col-md-3">
             <button class="btn btn-primary" data-toggle="modal" data-target="#add_book_modal">添加</button>
             <button class="btn btn-success" id="deleteAll">删除所有</button>
+            <a type="button" class="btn btn-primary" id="logInfo" th:href="@{/log/toLog}">查看日志</a>
         </div>
-        <div class="col-md-10 text-right">
+        <div class="col-md-9 text-right">
             <form class="form-inline" th:action="@{/book/search.do}" action="#" method="get">
                 <div class="form-group">
                     <div class="input-group">
@@ -479,10 +480,10 @@
                 contentType: false, //必需使用 false,  这样才能使用form表单采用 multipart/form-data 传输
                 processData: false,
                 success: function (data) {
-                    console.log(data);
+                    console.requestLog(data);
                     if (data.status == 'success') {
                         alert("更新图书成功");
-                        console.log(data.data);
+                        console.requestLog(data.data);
                         //刷新界面
                         window.location.reload();
                     } else {   //Bean 验证不通过, 把验证不通过的信息放到页面中
@@ -490,7 +491,7 @@
                             var errorMsg = data.data[i];
                             var fieldName = errorMsg.field;
                             var targetElement = "label[update-tip=" + fieldName + "]";
-                            console.log(targetElement);
+                            console.requestLog(targetElement);
                             $(targetElement).append(errorMsg.defaultMessage);
                         }
                     }
