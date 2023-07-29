@@ -1,19 +1,24 @@
 package com.xl.BookManager;
 
+import com.xl.BookManager.entity.RequestLog;
 import com.xl.BookManager.entity.User;
+import com.xl.BookManager.service.RequestLogService;
 import com.xl.BookManager.service.UserService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.system.ApplicationHome;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import java.io.File;
 import java.util.UUID;
 
 @SpringBootTest
 class BookManagerApplicationTests {
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private RequestLogService logService;
+
+    private
 
     @Test
     void contextLoads() {
@@ -35,9 +40,11 @@ class BookManagerApplicationTests {
 
     @Test
     void applicationTest() {
-        ApplicationHome home = new ApplicationHome();
-        File source = home.getSource();
-        System.out.println(source);
+        RequestLog requestLog = new RequestLog();
+        requestLog.setRequester("12321");
+        requestLog.setRequestUri("www.baidu.com");
+
+        logService.save(requestLog);
     }
 
 }
