@@ -1,6 +1,7 @@
 package com.xl.BookManager.config;
 
 import com.xl.BookManager.interceptor.LogInterceptor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.system.ApplicationHome;
 import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
@@ -17,18 +18,20 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import java.util.List;
 
 /******************
- * @Author yejf
- * @Description WebMvcConfig
+ * @description WebMvcConfig
  */
 @Configuration
 public class WebMvcConfig implements WebMvcConfigurer {
 
     private final String UPLOAD_IMAGE_URL;
 
+    @Autowired
+    private LogInterceptor interceptor;
+
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         //拦截所有请求做日志
-        registry.addInterceptor(new LogInterceptor()).addPathPatterns("/**");
+        registry.addInterceptor(interceptor).addPathPatterns("/book/*");
     }
 
     public WebMvcConfig() {
@@ -37,17 +40,6 @@ public class WebMvcConfig implements WebMvcConfigurer {
         UPLOAD_IMAGE_URL = "file:" + applicationHome.getDir().getAbsolutePath() + "/upload/images/";
         System.out.println("----> 上传的图片映射路径：" + UPLOAD_IMAGE_URL);
     }
-
-    //@Bean
-    /*public FilterRegistrationBean filterRegistrationBean() {
-        System.out.println("执行了 FilterRegistrationBean...");
-        FilterRegistrationBean filterRegistrationBean = new FilterRegistrationBean();
-        filterRegistrationBean.setFilter(new LoginFilter());
-        filterRegistrationBean.addUrlPatterns("/book/*");
-        filterRegistrationBean.setOrder(1);
-        return filterRegistrationBean;
-    }*/
-
 
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
