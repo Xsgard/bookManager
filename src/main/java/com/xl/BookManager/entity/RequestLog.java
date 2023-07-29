@@ -1,9 +1,10 @@
 package com.xl.BookManager.entity;
 
+import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 
 import java.io.Serializable;
-import java.time.LocalDateTime;
+import java.util.Date;
 
 /**
  * @author Asgard
@@ -12,10 +13,11 @@ import java.time.LocalDateTime;
  * @date 2023/7/29 13:22
  */
 @Data
-public class Log implements Serializable {
+@TableName("t_log")
+public class RequestLog implements Serializable {
     private Integer id;
     private String requester;
-    private String requestUrl;
-    private LocalDateTime requestTime;
-    private Integer costTime;
+    private String requestUri;
+    private Date requestTime;
+    private Long costTime;
 }
