@@ -1,5 +1,6 @@
 package com.xl.BookManager.config;
 
+import com.xl.BookManager.interceptor.LogInterceptor;
 import org.springframework.boot.system.ApplicationHome;
 import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
@@ -9,6 +10,7 @@ import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.validation.Validator;
 import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
+import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
@@ -22,6 +24,12 @@ import java.util.List;
 public class WebMvcConfig implements WebMvcConfigurer {
 
     private final String UPLOAD_IMAGE_URL;
+
+    @Override
+    public void addInterceptors(InterceptorRegistry registry) {
+        //拦截所有请求做日志
+        registry.addInterceptor(new LogInterceptor()).addPathPatterns("/**");
+    }
 
     public WebMvcConfig() {
         System.out.println("--- 初始化 WebMvcConfig ....");
