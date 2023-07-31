@@ -34,8 +34,18 @@ public class LogController {
     @RequestMapping("/toLog")
     public String toLog(Model model, @RequestParam(defaultValue = "1", value = "page") Integer page) {
         List<RequestLog> logList = logService.list();
+        int pageSize = 15;
+        int totalPages = (int) Math.ceil((double) logList.size() / pageSize);
+        int startIndex = (page - 1) * pageSize;
+        int endIndex = Math.min(startIndex + pageSize, logList.size());
+
+        List<RequestLog> pageList = logList.subList(startIndex, endIndex);
+
+        model.addAttribute("Log_List", pageList);
+        model.addAttribute("totalPages", totalPages);
+        model.addAttribute("currentPage", page);
         model.addAttribute("requestPath", "/log/toLog");
-        return getList(model, page, logList);
+        return "log/list";
     }
 
     @RequestMapping(value = "/deleteSelect.do", method = RequestMethod.POST, produces = "application/json")
@@ -58,22 +68,8 @@ public class LogController {
         } else
             return "redirect:toLog";
         List<RequestLog> logList = logService.list(queryWrapper);
-
-        model.addAttribute("requestPath", "search.do");
-        return getList(model, page, logList);
+        model.addAttribute("Log_List", logList);
+        return "log/search";
     }
 
-    private String getList(Model model, @RequestParam(defaultValue = "1", value = "page") Integer page, List<RequestLog> logList) {
-        int pageSize = 15;
-        int totalPages = (int) Math.ceil((double) logList.size() / pageSize);
-        int startIndex = (page - 1) * pageSize;
-        int endIndex = Math.min(startIndex + pageSize, logList.size());
-
-        List<RequestLog> pageList = logList.subList(startIndex, endIndex);
-
-        model.addAttribute("Log_List", pageList);
-        model.addAttribute("totalPages", totalPages);
-        model.addAttribute("currentPage", page);
-        return "log/list";
-    }
 }
