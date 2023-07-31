@@ -99,21 +99,6 @@ public class UserController {
         userService.save(user);
         return "user/login";
     }
-//
-//    @RequestMapping("/usernameCK")
-//    @ResponseBody
-//    public String usernameCheck(@RequestParam String username, Model model) {
-//        User user = new User();
-//        user.setRealName(username);
-//        LambdaQueryWrapper<User> queryWrapper = new LambdaQueryWrapper<>();
-//        queryWrapper.eq(StringUtils.isEmpty(user.getUserName()), User::getUserName, user.getUserName());
-//        int count = userService.count(queryWrapper);
-//        if (count > 0) {
-//            model.addAttribute("CHECK_PWD_ERROR", "两次密码输入不一样");
-//            return "user/login";
-//        }else
-//            return null;
-//    }
 
     @RequestMapping("/logout")
     public String logout(HttpSession session) {
