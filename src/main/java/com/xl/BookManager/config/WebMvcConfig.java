@@ -31,7 +31,9 @@ public class WebMvcConfig implements WebMvcConfigurer {
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         //拦截所有请求做日志
-        registry.addInterceptor(interceptor).addPathPatterns("/book/*");
+        registry.addInterceptor(interceptor).addPathPatterns("/**")
+                .excludePathPatterns("/static/**")
+                .excludePathPatterns("/templates/**");
     }
 
     public WebMvcConfig() {
