@@ -11,9 +11,14 @@ import org.springframework.boot.system.ApplicationHome;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
+import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.validation.Valid;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
@@ -66,14 +71,24 @@ public class BookController {
 
     @RequestMapping(value = "/add.do", method = RequestMethod.POST, produces = "application/json")
     @ResponseBody
-    public R add(Book book, @RequestParam("coverUrlFile") MultipartFile image) {
-        if (image != null) {
-            //上传封面--返回值：生成的图片名
-            String fileName = upLoad(image);
-            book.setCoverUrl(fileName);
+    public R add(@Valid Book book, BindingResult bindingResult,
+                 @RequestParam("coverUrlFile") MultipartFile image) {
+        if (bindingResult.hasErrors()) {
+            List<FieldError> fieldErrors = bindingResult.getFieldErrors();
+            for (FieldError fe :
+                    fieldErrors) {
+                System.out.println(fe.getField() + " ===> " + fe.getDefaultMessage());
+            }
+            return new R("failure", fieldErrors);
+        } else {
+            if (image != null) {
+                //上传封面--返回值：生成的图片名
+                String fileName = upLoad(image);
+                book.setCoverUrl(fileName);
+            }
+            bookService.save(book);
+            return new R("success", book);
         }
-        bookService.save(book);
-        return new R("success", book);
     }
 
     /**
@@ -114,14 +129,22 @@ public class BookController {
     @Transactional
     @ResponseBody
     @RequestMapping(value = "/update.do", method = RequestMethod.POST, produces = "application/json")
-    public R update(Book book, @RequestParam("coverUrlFile") MultipartFile file) {
-        if (file.getOriginalFilename() != null && !file.getOriginalFilename().trim().isEmpty()) {
-            String newCover = upLoad(file);
-            book.setCoverUrl(newCover);
+    public R update(Book book, @RequestParam("coverUrlFile") MultipartFile file, BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) {
+            //说明验证没有通过，则把错误绑定前端的页面
+            final List<FieldError> fieldErrors = bindingResult.getFieldErrors();
+            for (FieldError fe : fieldErrors) {
+                System.out.println(fe.getField() + " ==> " + fe.getDefaultMessage());
+            }
+            return new R("failure", fieldErrors);
+        } else {
+            if (file.getOriginalFilename() != null && !file.getOriginalFilename().trim().isEmpty()) {
+                String newCover = upLoad(file);
+                book.setCoverUrl(newCover);
+            }
+            bookService.updateById(book);
+            return new R("success", book);
         }
-        bookService.updateById(book);
-        return new R("success", book);
-
     }
 
     @RequestMapping(value = "/search.do", method = RequestMethod.GET)
