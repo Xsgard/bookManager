@@ -38,6 +38,10 @@ public class UserController {
         this.userService = userService;
     }
 
+    /**
+     * 跳转至登录页
+     * @return
+     */
     @RequestMapping(value = "/toLogin", method = RequestMethod.GET)
     public String toLogin() {
         return "user/login";
@@ -80,11 +84,22 @@ public class UserController {
         return "redirect:/book/list";
     }
 
+    /**
+     * 跳转至注册页
+     * @return
+     */
     @RequestMapping("/toRegister")
     public String toRegister() {
         return "user/register";
     }
 
+    /**
+     * 注册功能
+     * @param user
+     * @param pwd2
+     * @param model
+     * @return
+     */
     @RequestMapping("/register")
     public String register(User user, String pwd2, Model model) {
         if (!user.getPassword().equals(pwd2)) {
@@ -100,6 +115,11 @@ public class UserController {
         return "user/login";
     }
 
+    /**
+     * 退出登录并跳转至登录页
+     * @param session
+     * @return
+     */
     @RequestMapping("/logout")
     public String logout(HttpSession session) {
         log.info("用户已退出登录");
