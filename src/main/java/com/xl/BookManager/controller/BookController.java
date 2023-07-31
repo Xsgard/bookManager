@@ -115,7 +115,7 @@ public class BookController {
     @ResponseBody
     @RequestMapping(value = "/update.do", method = RequestMethod.POST, produces = "application/json")
     public R update(Book book, @RequestParam("coverUrlFile") MultipartFile file) {
-        if (file != null) {
+        if (file.getOriginalFilename() != null && !file.getOriginalFilename().trim().isEmpty()) {
             String newCover = upLoad(file);
             book.setCoverUrl(newCover);
         }
