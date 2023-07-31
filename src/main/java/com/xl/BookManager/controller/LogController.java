@@ -32,6 +32,12 @@ public class LogController {
         this.logService = logService;
     }
 
+    /**
+     * 查看日志
+     * @param model
+     * @param page
+     * @return
+     */
     @RequestMapping("/toLog")
     public String toLog(Model model, @RequestParam(defaultValue = "1", value = "page") Integer page) {
         List<RequestLog> logList = logService.list();
@@ -49,6 +55,11 @@ public class LogController {
         return "log/list";
     }
 
+    /**
+     * 删除日志
+     * @param ids
+     * @return
+     */
     @RequestMapping(value = "/deleteSelect.do", method = RequestMethod.POST, produces = "application/json")
     @ResponseBody
     @Transactional
@@ -60,6 +71,13 @@ public class LogController {
             return "删除失败！";
     }
 
+    /**
+     *查找日志
+     * @param keyWord
+     * @param model
+     * @param page
+     * @return
+     */
     @RequestMapping(value = "/search.do")
     public String search(@RequestParam(value = "search", defaultValue = "") String keyWord, Model model,
                          @RequestParam(defaultValue = "1", value = "page") Integer page) {
