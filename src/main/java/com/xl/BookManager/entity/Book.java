@@ -25,24 +25,24 @@ import java.util.Objects;
 public class Book implements Serializable {
     private Integer id;
 
-    @NotEmpty(message = "{name.error.notnull}")
-    //@NotEmpty(message = "图书名不能为空")
-    //@Size(max = 25, message = "图书名长度不能超过25个字符")
-    @Size(max = 25, message = "{name.error.max}")
+    //    @NotEmpty(message = "{name.error.notnull}")
+    //    @Size(max = 25, message = "{name.error.max}")
+    @NotEmpty(message = "图书名不能为空")
+    @Size(max = 25, message = "图书名长度不能超过25个字符")
     private String name;
 
-    //@NotEmpty(message = "作者不能为空")
-    @NotEmpty(message = "{author.error.notnull}")
+    //    @NotEmpty(message = "{author.error.notnull}")
+    @NotEmpty(message = "作者不能为空")
     private String author;
 
-    //@Min(value = 0, message = "价格必需大于0")
-    @Min(value = 0, message = "{price.error.pattern}")
+    //    @Min(value = 0, message = "{price.error.pattern}")
+    @Min(value = 0, message = "价格必需大于0")
     private float price;
 
     @NotEmpty(message = "出版社不能为空")
     private String publisher;
 
-    @Past(message = "出版日期不能晚于今天")
+    @Past(message = "出版日期不能早于今天")
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     @JsonFormat(pattern = "yyyy-MM-dd")  //此注解来自于：jackson-datatype-jsr310
     private LocalDate publishDate;
