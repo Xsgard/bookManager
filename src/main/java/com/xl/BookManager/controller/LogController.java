@@ -1,12 +1,14 @@
 package com.xl.BookManager.controller;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.xl.BookManager.entity.RequestLog;
 import com.xl.BookManager.service.RequestLogService;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -30,11 +32,48 @@ public class LogController {
     }
 
     @RequestMapping("/toLog")
-    public String toLog(Model model) {
-        List<RequestLog> list = logService.list();
-//        List<RequestLog> newList = list.stream().map((item) -> {
-//        }).collect(Collectors.toList());
-        model.addAttribute("Log_List", list);
+    public String toLog(Model model, @RequestParam(defaultValue = "1", value = "page") Integer page) {
+        List<RequestLog> logList = logService.list();
+        model.addAttribute("requestPath", "/log/toLog");
+        return getList(model, page, logList);
+    }
+
+    @RequestMapping(value = "/deleteSelect.do", method = RequestMethod.POST, produces = "application/json")
+    @ResponseBody
+    public String deleteByIdArr(@RequestBody List<Integer> ids) {
+        boolean flag = logService.removeByIds(ids);
+        if (flag) {
+            return "删除成功！";
+        } else
+            return "删除失败！";
+    }
+
+    @RequestMapping(value = "/search.do")
+    public String search(@RequestParam(value = "search", defaultValue = "") String keyWord, Model model,
+                         @RequestParam(defaultValue = "1", value = "page") Integer page) {
+        LambdaQueryWrapper<RequestLog> queryWrapper = new LambdaQueryWrapper<>();
+        if (StringUtils.isNotEmpty(keyWord.trim())) {
+            queryWrapper.like(RequestLog::getRequester, keyWord)
+                    .or(wrapper -> wrapper.like(RequestLog::getRequestUri, keyWord));
+        } else
+            return "redirect:toLog";
+        List<RequestLog> logList = logService.list(queryWrapper);
+
+        model.addAttribute("requestPath", "search.do");
+        return getList(model, page, logList);
+    }
+
+    private String getList(Model model, @RequestParam(defaultValue = "1", value = "page") Integer page, List<RequestLog> logList) {
+        int pageSize = 15;
+        int totalPages = (int) Math.ceil((double) logList.size() / pageSize);
+        int startIndex = (page - 1) * pageSize;
+        int endIndex = Math.min(startIndex + pageSize, logList.size());
+
+        List<RequestLog> pageList = logList.subList(startIndex, endIndex);
+
+        model.addAttribute("Log_List", pageList);
+        model.addAttribute("totalPages", totalPages);
+        model.addAttribute("currentPage", page);
         return "log/list";
     }
 }
