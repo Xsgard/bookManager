@@ -13,17 +13,14 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
-import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
 import java.util.UUID;
-import java.util.function.Consumer;
 
 /**
  * @author Asgard
@@ -35,7 +32,6 @@ import java.util.function.Consumer;
 @RequestMapping("/book")
 @Slf4j
 public class BookController {
-    private final String COVER_PATH = "/static/images/book_cover_img";
     private BookService bookService;
 
     //注入service
@@ -94,8 +90,6 @@ public class BookController {
     /**
      * 批量删除
      *
-     * @param ids
-     * @return
      */
     @RequestMapping(value = "/deleteSelect.do", method = RequestMethod.POST, produces = "application/json")
     @ResponseBody
@@ -116,8 +110,7 @@ public class BookController {
     @RequestMapping("/toUpdate.do")
     @ResponseBody
     public Object getById(Integer id) {
-        Book book = bookService.getById(id);
-        return book;
+        return bookService.getById(id);
     }
 
     /**
@@ -177,6 +170,7 @@ public class BookController {
         try {
             ApplicationHome home = new ApplicationHome(getClass());
             File source = home.getDir();
+            String COVER_PATH = "/static/images/book_cover_img";
             File filePath = new File(source, COVER_PATH);
             if (!filePath.exists()) {
                 filePath.mkdirs();
