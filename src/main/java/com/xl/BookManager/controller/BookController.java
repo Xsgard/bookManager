@@ -176,7 +176,7 @@ public class BookController {
 
         try {
             ApplicationHome home = new ApplicationHome(getClass());
-            File source = home.getSource();
+            File source = home.getDir();
             File filePath = new File(source, COVER_PATH);
             if (!filePath.exists()) {
                 filePath.mkdirs();
