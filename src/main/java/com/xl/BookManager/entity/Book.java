@@ -37,7 +37,7 @@ public class Book implements Serializable {
 
     //    @Min(value = 0, message = "{price.error.pattern}")
     @Min(value = 0, message = "价格必需大于0")
-    private float price;
+    private Float price;
 
     @NotEmpty(message = "出版社不能为空")
     private String publisher;
